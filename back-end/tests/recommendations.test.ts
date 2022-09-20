@@ -70,3 +70,38 @@ describe("Testa GET /recommendations/random", () => {
     expect(result.body).toBeInstanceOf(Object);
   });
 });
+
+describe("Testa GET /recommendations/top/amount", () => {
+  it("Testa corretamente -> deve retornar um array", async () => {
+    const recommendation = recommendationFactory();
+
+    await server.post("/recommendations").send(recommendation);
+    const result = await server.get("/recommendations/top/1").send();
+
+    expect(result.body).toBeInstanceOf(Array);
+  });
+});
+
+describe("Testa GET /recommendations/:id", () => {
+  it("Testa com música existente -> deve retornar um objeto com a música", async () => {
+    const recommendation = recommendationFactory();
+
+    await server.post("/recommendations").send(recommendation);
+    const createdRecommendation = await prisma.recommendation.findFirst({
+      where: { name: recommendation.name },
+    });
+
+    const result = await server
+      .get(`/recommendations/${createdRecommendation.id}`)
+      .send();
+
+    expect(result.body).not.toBeFalsy();
+    expect(createdRecommendation.name).toBe(recommendation.name);
+  });
+
+  it("Testa com id não cadastrado no banco -> deve retornar 404", async () => {
+    const result = await server.get("/recommendation/1").send();
+
+    expect(result.status).toBe(404);
+  });
+});
