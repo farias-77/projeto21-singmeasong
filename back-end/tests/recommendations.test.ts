@@ -48,5 +48,25 @@ describe("Testa GET /recommendations", () => {
 
     await server.post("/recommendations").send(recommendation);
     const result = await server.get("/recommendations").send();
+
+    expect(result.body).toBeInstanceOf(Array);
+  });
+});
+
+describe("Testa GET /recommendations/random", () => {
+  it("Testa sem músicas cadastradas -> deve retornar 404", async () => {
+    const result = await server.get("/recommendations/random").send();
+
+    expect(result.status).toBe(404);
+  });
+
+  it("Testa com músicas cadastradas -> deve retornar um objeto de música", async () => {
+    const recommendation = recommendationFactory();
+
+    await server.post("/recommendations").send(recommendation);
+
+    const result = await server.get("/recommendations/random").send();
+
+    expect(result.body).toBeInstanceOf(Object);
   });
 });
