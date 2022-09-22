@@ -81,3 +81,29 @@ describe("Testa upvote e downvpte", () => {
         );
     });
 });
+
+describe("Testa botões header", () => {
+    it("Testa botão top", () => {
+        cy.visit("http://localhost:3000/");
+
+        cy.get("#topButton").click();
+
+        cy.url().should("equal", "http://localhost:3000/top");
+    });
+
+    it("Testa botão random", () => {
+        cy.visit("http://localhost:3000/");
+
+        cy.get("#randomButton").click();
+
+        cy.url().should("equal", "http://localhost:3000/random");
+    });
+
+    it("Testa botão home", () => {
+        cy.visit("http://localhost:3000/top");
+
+        cy.get("#homeButton").click();
+
+        cy.url().should("equal", "http://localhost:3000/");
+    });
+});
