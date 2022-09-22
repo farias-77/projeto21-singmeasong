@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon src/server.ts",
     "prismaMigrations": "npx dotenv-cli -e .env.test npx prisma migrate dev",
-    "test": "npm run prismaMigrations && npx dotenv-cli -e .env.test jest -i"
+    "test": "npm run prismaMigrations && npx dotenv-cli -e .env.test jest -i --coverage"
   },
   "keywords": [],
   "author": "",
