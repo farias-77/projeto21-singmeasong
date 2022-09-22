@@ -23,3 +23,19 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("truncateRecommendationsTable", () => {
+    cy.request("DELETE", `http://localhost:5000/recommendations/e2eReset`, {});
+});
+
+Cypress.Commands.add("createNewRecommendation", (recommendation) => {
+    cy.visit("http://localhost:3000/");
+    cy.get("#inputName").type(recommendation.name);
+    cy.get("#inputYoutube").type(recommendation.youtubeLink);
+
+    cy.intercept("POST", `http://localhost:5000/recommendations`).as(
+        "postNewRecommendation"
+    );
+    cy.get("#submitButton").click();
+    cy.wait("@postNewRecommendation");
+});

@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 
 beforeEach(() => {
-    cy.resetDatabase();
+    cy.truncateRecommendationsTable();
 });
 
 describe("Testa criação de recomendação", () => {
@@ -11,15 +11,7 @@ describe("Testa criação de recomendação", () => {
             youtubeLink: "https://www.youtube.com/watch?v=zeJ3KpmgIwA",
         };
 
-        cy.visit("http://localhost:3000/");
-        cy.get("#inputName").type(recommendation.name);
-        cy.get("#inputYoutube").type(recommendation.youtubeLink);
-
-        cy.intercept("POST", `http://localhost:5000/recommendations`).as(
-            "postNewRecommendation"
-        );
-        cy.get("#submitButton").click();
-        cy.wait("@postNewRecommendation");
+        cy.createNewRecommendation(recommendation);
 
         cy.contains(recommendation.name).should("be.visible");
     });
@@ -29,15 +21,11 @@ describe("Testa criação de recomendação", () => {
             name: faker.lorem.words(3),
             youtubeLink: "https://www.youtube.com/watch?v=zeJ3KpmgIwA",
         };
+        cy.createNewRecommendation(recommendation);
+        cy.createNewRecommendation(recommendation);
 
-        cy.visit("http://localhost:3000/");
-        cy.get("#inputName").type(recommendation.name);
-        cy.get("#inputYoutube").type(recommendation.youtubeLink);
-
-        cy.intercept("POST", `http://localhost:5000/recommendations`).as(
-            "postNewRecommendation"
-        );
-        cy.get("#submitButton").click();
-        cy.wait("@postNewRecommendation");
+        cy.on("window:alert", (t) => {
+            expect(t).to.contains("Error creating recommendation!");
+        });
     });
 });

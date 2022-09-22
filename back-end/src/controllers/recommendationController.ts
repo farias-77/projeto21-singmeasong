@@ -57,6 +57,8 @@ async function getById(req: Request, res: Response) {
 
 async function resetE2e(req: Request, res: Response) {
     await recommendationService.truncateForE2eTesting();
+
+    res.sendStatus(200);
 }
 
 export const recommendationController = {
