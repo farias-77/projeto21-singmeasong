@@ -8,23 +8,11 @@ import { prisma } from "../../src/database";
 describe("Testa service Insert", () => {
     it("Testa com name já existente -> deve retornar 409", async () => {
         const recommendation = recommendationFactory();
-        const name = recommendation.name;
-        // await prisma.recommendation.create({ data: recommendation });
-        // const mockedRecommendation = prisma.recommendation.findUnique({
-        //     where: { name: recommendation.name },
-        // });
-
-        // jest.spyOn(
-        //     recommendationRepository,
-        //     "findByName"
-        // ).mockImplementationOnce(() => {
-        //     return mockedRecommendation;
-        // });
 
         jest.spyOn(
             recommendationRepository,
             "findByName"
-        ).mockImplementationOnce((name): any => {
+        ).mockImplementationOnce((): any => {
             return {
                 id: 1,
                 name: recommendation.name,
