@@ -95,4 +95,6 @@ export const recommendationService = {
     getById: getByIdOrFail,
     getTop,
     truncateForE2eTesting,
+    getByScore,
+    getScoreFilter,
 };

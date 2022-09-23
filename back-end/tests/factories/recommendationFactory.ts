@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { Recommendation } from "@prisma/client";
 
 function recommendationFactory() {
     const recommendation = {
@@ -9,12 +10,12 @@ function recommendationFactory() {
     return recommendation;
 }
 
-function completeRecommendationFactory() {
-    const recommendation = {
+function completeRecommendationFactory(): Recommendation {
+    const recommendation: Recommendation = {
         id: faker.datatype.number(),
         name: faker.lorem.words(3),
         youtubeLink: "https://www.youtube.com/watch?v=6C-h6WG43dk",
-        score: faker.datatype.number(),
+        score: 1,
     };
 
     return recommendation;
