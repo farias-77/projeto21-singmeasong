@@ -2,7 +2,7 @@ import supertest from "supertest";
 import app from "../../src/app";
 import { prisma } from "../../src/database";
 
-import recommendationFactory from "../factories/recommendationFacotry";
+import { recommendationFactories } from "../factories/recommendationFactory";
 
 const server = supertest(app);
 
@@ -16,7 +16,7 @@ afterAll(async () => {
 
 describe("Testa POST /recommendations", () => {
     it("Testa com body correto -> deve retornar 201", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         const result = await server
             .post("/recommendations")
@@ -26,7 +26,7 @@ describe("Testa POST /recommendations", () => {
     });
 
     it("Testa com link que não é do youtube -> deve retornar 422", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
         recommendation.youtubeLink = "https://google.com";
 
         const result = await server
@@ -37,7 +37,7 @@ describe("Testa POST /recommendations", () => {
     });
 
     it("Testa com name duplicado -> deve retornar 409", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         await server.post("/recommendations").send(recommendation);
         const result = await server
@@ -50,7 +50,7 @@ describe("Testa POST /recommendations", () => {
 
 describe("Testa GET /recommendations", () => {
     it("Testa corretamente -> deve retornar um array as 10 últimas recomendações de música", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         await server.post("/recommendations").send(recommendation);
         const result = await server.get("/recommendations").send();
@@ -67,7 +67,7 @@ describe("Testa GET /recommendations/random", () => {
     });
 
     it("Testa com músicas cadastradas -> deve retornar um objeto de música", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         await server.post("/recommendations").send(recommendation);
 
@@ -79,7 +79,7 @@ describe("Testa GET /recommendations/random", () => {
 
 describe("Testa GET /recommendations/top/amount", () => {
     it("Testa corretamente -> deve retornar um array", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         await server.post("/recommendations").send(recommendation);
         const result = await server.get("/recommendations/top/1").send();
@@ -90,7 +90,7 @@ describe("Testa GET /recommendations/top/amount", () => {
 
 describe("Testa GET /recommendations/:id", () => {
     it("Testa com música existente -> deve retornar um objeto com a música", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         await server.post("/recommendations").send(recommendation);
         const createdRecommendation = await prisma.recommendation.findFirst({
@@ -114,7 +114,7 @@ describe("Testa GET /recommendations/:id", () => {
 
 describe("Testa POST /recommendations/:id/upvote", () => {
     it("Testa com id existente -> deve retornar 200", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         await server.post("/recommendations").send(recommendation);
         const createdRecommendation = await prisma.recommendation.findFirst({
@@ -142,7 +142,7 @@ describe("Testa POST /recommendations/:id/upvote", () => {
 
 describe("Testa POST /recommendations/:id/downvote", () => {
     it("Testa com id existente e não deve deletar recomendação -> deve retornar 200", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         await server.post("/recommendations").send(recommendation);
         const createdRecommendation = await prisma.recommendation.findFirst({
@@ -168,7 +168,7 @@ describe("Testa POST /recommendations/:id/downvote", () => {
     });
 
     it("Testa com id existente e deve deletar recomendação -> deve retornar 200", async () => {
-        const recommendation = recommendationFactory();
+        const recommendation = recommendationFactories.recommendationFactory();
 
         await server.post("/recommendations").send(recommendation);
         const createdRecommendation = await prisma.recommendation.findFirst({

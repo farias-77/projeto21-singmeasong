@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.59% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>25/27</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>7/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.59% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>25/27</span>
             </div>
         
             
@@ -129,7 +129,14 @@
 <a name='L64'></a><a href='#L64'>64</a>
 <a name='L65'></a><a href='#L65'>65</a>
 <a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -186,7 +193,14 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,65 +215,72 @@ import { recommendationService } from "../services/recommendationsService.js";
 import { wrongSchemaError } from "../utils/errorUtils.js";
 &nbsp;
 async function insert(req: Request, res: Response) {
-  const validation = recommendationSchema.validate(req.body);
-  if (validation.error) {
-    throw wrongSchemaError();
-  }
+    const validation = recommendationSchema.validate(req.body);
+    if (validation.error) {
+        throw wrongSchemaError();
+    }
 &nbsp;
-  await recommendationService.insert(req.body);
+    await recommendationService.insert(req.body);
 &nbsp;
-  res.sendStatus(201);
+    res.sendStatus(201);
 }
 &nbsp;
 async function upvote(req: Request, res: Response) {
-  const { id } = req.params;
+    const { id } = req.params;
 &nbsp;
-  await recommendationService.upvote(+id);
+    await recommendationService.upvote(+id);
 &nbsp;
-  res.sendStatus(200);
+    res.sendStatus(200);
 }
 &nbsp;
 async function downvote(req: Request, res: Response) {
-  const { id } = req.params;
+    const { id } = req.params;
 &nbsp;
-  await recommendationService.downvote(+id);
+    await recommendationService.downvote(+id);
 &nbsp;
-  res.sendStatus(200);
+    res.sendStatus(200);
 }
 &nbsp;
 async function random(req: Request, res: Response) {
-  const randomRecommendation = await recommendationService.getRandom();
+    const randomRecommendation = await recommendationService.getRandom();
 &nbsp;
-  res.send(randomRecommendation);
+    res.send(randomRecommendation);
 }
 &nbsp;
 async function get(req: Request, res: Response) {
-  const recommendations = await recommendationService.get();
-  res.send(recommendations);
+    const recommendations = await recommendationService.get();
+    res.send(recommendations);
 }
 &nbsp;
 async function getTop(req: Request, res: Response) {
-  const { amount } = req.params;
+    const { amount } = req.params;
 &nbsp;
-  const recommendations = await recommendationService.getTop(+amount);
-  res.send(recommendations);
+    const recommendations = await recommendationService.getTop(+amount);
+    res.send(recommendations);
 }
 &nbsp;
 async function getById(req: Request, res: Response) {
-  const { id } = req.params;
+    const { id } = req.params;
 &nbsp;
-  const recommendation = await recommendationService.getById(+id);
-  res.send(recommendation);
+    const recommendation = await recommendationService.getById(+id);
+    res.send(recommendation);
+}
+&nbsp;
+async function <span class="fstat-no" title="function not covered" >resetE2e(</span>req: Request, res: Response) {
+<span class="cstat-no" title="statement not covered" >    await recommendationService.truncateForE2eTesting();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    res.sendStatus(200);</span>
 }
 &nbsp;
 export const recommendationController = {
-  insert,
-  upvote,
-  downvote,
-  random,
-  getTop,
-  get,
-  getById,
+    insert,
+    upvote,
+    downvote,
+    random,
+    getTop,
+    get,
+    getById,
+    resetE2e,
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -268,7 +289,7 @@ export const recommendationController = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Thu Sep 22 2022 11:47:28 GMT-0300 (Brasilia Standard Time)
+                at Fri Sep 23 2022 08:48:40 GMT-0300 (Brasilia Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

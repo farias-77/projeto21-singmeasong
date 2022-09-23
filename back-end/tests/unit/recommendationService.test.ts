@@ -1,38 +1,41 @@
 import { recommendationRepository } from "../../src/repositories/recommendationRepository";
-import * as errorHandlerMiddleware from "../../src/middlewares/errorHandlerMiddleware";
 import { recommendationService } from "../../src/services/recommendationsService";
-import recommendationFactory from "../factories/recommendationFacotry";
-import * as errorUtils from "../../src/utils/errorUtils";
-import { prisma } from "../../src/database";
+import { recommendationFactories } from "../factories/recommendationFactory";
+import { jest } from "@jest/globals";
 
 describe("Testa service Insert", () => {
-    it("Testa com name já existente -> deve retornar 409", async () => {
-        const recommendation = recommendationFactory();
+    it("Não deve criar uma recommendation com name repetido", () => {
+        const recommendation =
+            recommendationFactories.completeRecommendationFactory();
 
         jest.spyOn(
             recommendationRepository,
             "findByName"
-        ).mockImplementationOnce((): any => {
-            return {
-                id: 1,
-                name: recommendation.name,
-                youtubeLink: recommendation.youtubeLink,
-                score: 2,
-            };
-        });
+        ).mockResolvedValueOnce(recommendation);
 
-        jest.spyOn(errorUtils, "conflictError").mockImplementationOnce(
-            (message) => {
-                return { type: "conflict", message: message ?? "" };
-            }
+        const promise = recommendationService.insert(recommendation);
+
+        expect(promise).rejects.toEqual({
+            type: "conflict",
+            message: "Recommendations names must be unique",
+        });
+    });
+
+    it("Deve criar recommendation (name válido)", async () => {
+        const recommendation =
+            recommendationFactories.completeRecommendationFactory();
+
+        jest.spyOn(
+            recommendationRepository,
+            "findByName"
+        ).mockResolvedValueOnce(null);
+
+        jest.spyOn(recommendationRepository, "create").mockImplementationOnce(
+            (): any => {}
         );
 
-        // jest.spyOn(errorHandlerMiddleware, "errorHandlerMiddleware").mockImplementationOnce(() => {
+        await recommendationService.insert(recommendation);
 
-        // })
-
-        const result = await recommendationService.insert(recommendation);
-
-        //expect().toBe(409)
+        expect(recommendationRepository.create).toBeCalled();
     });
 });
