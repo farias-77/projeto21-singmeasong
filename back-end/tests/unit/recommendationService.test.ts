@@ -1,7 +1,15 @@
 import { recommendationRepository } from "../../src/repositories/recommendationRepository";
+import { errorHandlerMiddleware } from "../../src/middlewares/errorHandlerMiddleware";
 import { recommendationService } from "../../src/services/recommendationsService";
 import { recommendationFactories } from "../factories/recommendationFactory";
+import { Recommendation } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 import { jest } from "@jest/globals";
+import { AppError } from "../../src/utils/errorUtils";
+
+beforeEach(async () => {
+    jest.resetAllMocks();
+});
 
 describe("Testa service Insert", () => {
     it("Não deve criar uma recommendation com name repetido", () => {
@@ -53,7 +61,7 @@ describe("Testa service upvote", () => {
         jest.spyOn(
             recommendationRepository,
             "updateScore"
-        ).mockImplementationOnce((): any => {});
+        ).mockResolvedValueOnce(null);
 
         const promise = recommendationService.upvote(1);
 
@@ -77,11 +85,85 @@ describe("Testa service upvote", () => {
         jest.spyOn(
             recommendationRepository,
             "updateScore"
-        ).mockImplementationOnce((): any => {});
+        ).mockResolvedValueOnce(recommendation);
 
         await recommendationService.upvote(recommendation.id);
 
         expect(recommendationRepository.updateScore).toBeCalled();
+    });
+});
+
+describe("Testa service downvote", () => {
+    it("Testa com id inválido", () => {
+        jest.spyOn(recommendationRepository, "find").mockImplementationOnce(
+            (message): any => {
+                return false;
+            }
+        );
+
+        const id = 1;
+        const promise = recommendationService.downvote(id);
+
+        expect(promise).rejects.toEqual({
+            type: "not_found",
+            message: "",
+        });
+    });
+
+    it("Testa com id válido", async () => {
+        const updatedRecommendation: Recommendation = {
+            id: 1,
+            name: faker.lorem.words(3),
+            youtubeLink: faker.internet.url(),
+            score: 9,
+        };
+
+        jest.spyOn(recommendationRepository, "find").mockImplementationOnce(
+            (message): any => {
+                return true;
+            }
+        );
+
+        jest.spyOn(
+            recommendationRepository,
+            "updateScore"
+        ).mockResolvedValueOnce(updatedRecommendation);
+
+        jest.spyOn(recommendationRepository, "remove").mockImplementationOnce(
+            (): any => {}
+        );
+
+        await recommendationService.downvote(updatedRecommendation.id);
+        expect(recommendationRepository.updateScore).toBeCalled();
+        expect(recommendationRepository.remove).not.toBeCalled();
+    });
+
+    it("Testa com id válido e delete no final", async () => {
+        const updatedRecommendation: Recommendation = {
+            id: 1,
+            name: faker.lorem.words(3),
+            youtubeLink: faker.internet.url(),
+            score: -10,
+        };
+
+        jest.spyOn(recommendationRepository, "find").mockImplementationOnce(
+            (message): any => {
+                return true;
+            }
+        );
+
+        jest.spyOn(
+            recommendationRepository,
+            "updateScore"
+        ).mockResolvedValueOnce(updatedRecommendation);
+
+        jest.spyOn(recommendationRepository, "remove").mockImplementationOnce(
+            (): any => {}
+        );
+
+        await recommendationService.downvote(updatedRecommendation.id);
+        expect(recommendationRepository.updateScore).toBeCalled();
+        expect(recommendationRepository.remove).toBeCalled();
     });
 });
 
