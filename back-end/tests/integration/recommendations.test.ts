@@ -106,7 +106,7 @@ describe("Testa GET /recommendations/:id", () => {
     });
 
     it("Testa com id não cadastrado no banco -> deve retornar 404", async () => {
-        const result = await server.get("/recommendation/1").send();
+        const result = await server.get("/recommendations/1").send();
 
         expect(result.status).toBe(404);
     });
@@ -191,5 +191,13 @@ describe("Testa POST /recommendations/:id/downvote", () => {
 
         expect(result.status).toBe(200);
         expect(deletedRecommendation).toBeFalsy();
+    });
+});
+
+describe("Testa DELETE /e2eReset ", () => {
+    it("Deve retornar 200", async () => {
+        const result = await server.delete("/recommendations/e2eReset").send();
+
+        expect(result.status).toBe(200);
     });
 });

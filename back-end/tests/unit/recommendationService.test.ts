@@ -2,8 +2,6 @@ import { recommendationRepository } from "../../src/repositories/recommendationR
 import { recommendationService } from "../../src/services/recommendationsService";
 import { recommendationFactories } from "../factories/recommendationFactory";
 import { jest } from "@jest/globals";
-import { Recommendation } from "@prisma/client";
-import { faker } from "@faker-js/faker";
 
 describe("Testa service Insert", () => {
     it("Não deve criar uma recommendation com name repetido", () => {
