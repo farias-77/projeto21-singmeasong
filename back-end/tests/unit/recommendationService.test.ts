@@ -1,11 +1,9 @@
 import { recommendationRepository } from "../../src/repositories/recommendationRepository";
-import { errorHandlerMiddleware } from "../../src/middlewares/errorHandlerMiddleware";
 import { recommendationService } from "../../src/services/recommendationsService";
 import { recommendationFactories } from "../factories/recommendationFactory";
 import { Recommendation } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import { jest } from "@jest/globals";
-import { AppError } from "../../src/utils/errorUtils";
 
 beforeEach(async () => {
     jest.resetAllMocks();
